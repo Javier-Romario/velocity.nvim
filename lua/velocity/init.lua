@@ -66,8 +66,8 @@ M.open_window = function(input)
 
   api.nvim_win_set_option(win, 'cursorline', true) -- it highlight line with the cursor on it
   -- we can add title already here, because first line will never change
-  api.nvim_buf_set_lines(buf, 0, -1, false, { input, '', '' })
-  api.nvim_buf_add_highlight(buf, -1, 'WhidHeader', 0, 0, -1)
+  api.nvim_buf_set_lines(buf, 0, -1, false, { input })
+  -- api.nvim_buf_add_highlight(buf, -1, 'WhidHeader', 0, 0, -1)
 end
 
 M.exec = function(options)
@@ -109,6 +109,7 @@ vim.api.nvim_create_user_command("Velocity", function(arg)
 
     local line_start = vstart[2]
     local line_end = vend[2]
+    print('valueesss', vim.inspect(vstart, vend), vstart[2], vend[2])
 
     -- or use api.nvim_buf_get_lines
     local lines = vim.fn.getline(line_start, line_end)
