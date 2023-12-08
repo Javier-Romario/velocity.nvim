@@ -1,1 +1,1 @@
-require('lua/velocity')
+require('velocity')
