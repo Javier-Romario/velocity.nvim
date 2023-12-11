@@ -60,6 +60,13 @@ M.open_window = function(input)
   api.nvim_buf_set_lines(buf, 0, -1, false, input)
 end
 
+local function center(str, balance)
+  local width = api.nvim_win_get_width(win)
+  local shift = math.floor(width / 2) - math.floor(string.len(balance) / 2)
+  -- - math.floor(string.len(str) / 2)
+  return string.rep(' ', shift) .. str
+end
+
 local function split(inputstr, sep)
   if sep == nil then
     sep = "%s"
@@ -84,9 +91,9 @@ M.start_reading = function(buffer)
   timer:start(0, 500,
     vim.schedule_wrap(function()
       current_state.time = current_state.time + 1
-      table.remove(current_state.words, 1)
+      local removed = table.remove(current_state.words, 1)
       local new_string = split(table.concat(current_state.words, ' '), '%s')
-      api.nvim_buf_set_lines(buf, 0, -1, false, new_string)
+      api.nvim_buf_set_lines(buf, 0, -1, false, { center(table.concat(new_string, ' '), removed) })
 
       if current_state.words[2] == nil or current_state.time == 100 then
         timer:stop()
