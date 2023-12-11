@@ -7,9 +7,8 @@
 
 ### Animation
 
-- Loop through the words
-- Make a timer
-- Make a time to read a word
+- ✅ Loop through the words
+- ✅ Make a timer
 - Speed
   - Make speed editable +/-
   - Have a base speed set in the opts
@@ -17,8 +16,8 @@
 ## Speed reader TODO:
 
 - Add highlight to the correct character
-- Make top and bottom border lines point at the focus char
-- Make some padding to place the first word in the middle
+- ½✅ Make top and bottom border lines point at the focus char
+- ✅ Make some padding to place the first word in the middle
 
 ## Plugin TODO:
 

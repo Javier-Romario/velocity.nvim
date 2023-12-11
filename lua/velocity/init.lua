@@ -5,6 +5,14 @@ local buf, win
 local default_options = {}
 for k, v in pairs(default_options) do M[k] = v end
 
+-- vim.cmd [[
+--   hi def link VelocityControlChar @constructor
+-- ]]
+
+-- TODO: would be good to link the below to a known group in order to respect user set theme
+vim.cmd('highlight VelocityChar guifg=red')
+vim.cmd('syntax clear VelocityChar')
+
 M.setup = function(opts) for k, v in pairs(opts) do M[k] = v end end
 
 M.open_window = function(input)
@@ -80,6 +88,8 @@ end
 
 M.start_reading = function(buffer)
   -- We want to loop over the selection, and then animate the text and highlight the correct letter
+  --
+  -- then then then then
   local current_state = {
     time = 0,
     words = split(buffer, '%s')
@@ -93,7 +103,18 @@ M.start_reading = function(buffer)
       current_state.time = current_state.time + 1
       local removed = table.remove(current_state.words, 1)
       local new_string = split(table.concat(current_state.words, ' '), '%s')
-      api.nvim_buf_set_lines(buf, 0, -1, false, { center(table.concat(new_string, ' '), removed) })
+      local centered_text = center(table.concat(new_string, ' '), removed)
+
+      local control_char_highlight = math.ceil(string.len(new_string[1]) / 2)
+      local loop_pairs = { [new_string[1]] = { control_char_highlight } }
+      for word, v in pairs(loop_pairs) do
+        for _, position_of_letter in ipairs(v) do
+          vim.cmd('syntax match VelocityChar "' ..
+            word .. '"lc=' .. (position_of_letter - 1) .. ',me=s+' .. position_of_letter)
+        end
+      end
+
+      api.nvim_buf_set_lines(buf, 0, -1, false, { centered_text })
 
       if current_state.words[2] == nil or current_state.time == 100 then
         timer:stop()
