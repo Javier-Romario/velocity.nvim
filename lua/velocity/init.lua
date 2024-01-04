@@ -5,10 +5,6 @@ local buf, win
 local default_options = {}
 for k, v in pairs(default_options) do M[k] = v end
 
--- vim.cmd [[
---   hi def link VelocityControlChar @constructor
--- ]]
-
 -- TODO: would be good to link the below to a known group in order to respect user set theme
 vim.cmd('highlight VelocityChar guifg=red')
 vim.cmd('syntax clear VelocityChar')
