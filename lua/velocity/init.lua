@@ -40,7 +40,7 @@ local function add_highlight(start_pos, end_pos)
   if bufnr ~= nil and win ~= nil then
     center = Exact_Center(win)
     vim.highlight.range(bufnr, ns_id, "CustomHighlight", { 0, center - 1 }, { 1, center },
-      { inclusive = true, priority = 50 })
+      { inclusive = false, priority = 50 })
   end
 end
 
@@ -61,13 +61,14 @@ local function start_timer(input)
       table.remove(new_text, 1)
 
       if bufnr ~= nil then
-        local center_shift = string.rep(' ', Exact_Center(win))
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { center_shift .. Join(new_text, ' ') })
-        add_highlight()
-
         if IsArrayEmpty(new_text) then
           timer:stop()
           vim.api.nvim_buf_delete(bufnr, { force = true })
+        else
+          local word_offset = new_text[1]:len()
+          local center_shift = string.rep(' ', Exact_Center(win) - math.floor((word_offset / 2)))
+          vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { center_shift .. Join(new_text, ' ') })
+          add_highlight()
         end
       end
     end)
