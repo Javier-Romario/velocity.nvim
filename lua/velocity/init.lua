@@ -4,8 +4,9 @@ local bufnr = nil
 
 -- Window Settings
 local width = vim.api.nvim_get_option("columns")
-local win_height = 10
+local win_height = 1
 local win_width = math.ceil(width * 0.8)
+local win = nil
 
 local function open_popup_window(text)
   -- Step 1: Create a Popup Buffer
@@ -22,7 +23,7 @@ local function open_popup_window(text)
     style = 'minimal',
     border = 'rounded',
   }
-  local _ = vim.api.nvim_open_win(bufnr, false, opts)
+  win = vim.api.nvim_open_win(bufnr, false, opts)
 end
 
 -- Step 3: Define a Highlight Group
@@ -36,8 +37,10 @@ local function add_highlight(start_pos, end_pos)
   start_pos = start_pos or 1
   end_pos = end_pos or 2
 
-  if bufnr ~= nil then
-    vim.highlight.range(bufnr, ns_id, "CustomHighlight", { 0, 0 }, { 1, 5 }, { inclusive = true, priority = 50 })
+  if bufnr ~= nil and win ~= nil then
+    center = Exact_Center(win)
+    vim.highlight.range(bufnr, ns_id, "CustomHighlight", { 0, center - 1 }, { 1, center },
+      { inclusive = true, priority = 50 })
   end
 end
 
@@ -56,10 +59,10 @@ local function start_timer(input)
   timer:start(0, 300,
     vim.schedule_wrap(function()
       table.remove(new_text, 1)
-      print(vim.inspect(new_text))
 
       if bufnr ~= nil then
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { Join(new_text, ' ') })
+        local center_shift = string.rep(' ', Exact_Center(win))
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { center_shift .. Join(new_text, ' ') })
         add_highlight()
 
         if IsArrayEmpty(new_text) then

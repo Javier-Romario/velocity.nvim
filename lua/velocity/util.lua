@@ -27,3 +27,9 @@ function Do_setup(M)
 
   M.setup = function(opts) for k, v in pairs(opts) do M[k] = v end end
 end
+
+function Exact_Center(win)
+  local width = vim.api.nvim_win_get_width(win)
+  local shift = math.floor(width / 2)
+  return shift
+end
