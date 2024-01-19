@@ -1,5 +1,5 @@
 -- We want to loop over the selection, and then animate the text and highlight the correct letter
-require('testhi.util')
+require('velocity.util')
 local bufnr = nil
 
 -- Window Settings
@@ -10,7 +10,6 @@ local win_width = math.ceil(width * 0.8)
 local function open_popup_window(text)
   -- Step 1: Create a Popup Buffer
   bufnr = vim.api.nvim_create_buf(false, true)             -- create a new buffer
-  print('text bout to go into the buf', text)
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { text }) -- set buffer lines
 
   -- Step 2: Open Popup Window
@@ -47,17 +46,17 @@ local function start_timer(input)
 
   if input ~= nil then
     text = table.concat(input, '%s') -- since the table is just passed as a list
-    print("changed text", text)
   end
 
   open_popup_window(text)
 
   local timer = vim.loop.new_timer()
 
+  local new_text = Split(text)
   timer:start(0, 300,
     vim.schedule_wrap(function()
-      local new_text = Split(text)
       table.remove(new_text, 1)
+      print(vim.inspect(new_text))
 
       if bufnr ~= nil then
         vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { Join(new_text, ' ') })
@@ -72,7 +71,7 @@ local function start_timer(input)
   )
 end
 
-vim.api.nvim_create_user_command("Testhi", function(arg)
+vim.api.nvim_create_user_command("Velocity", function(arg)
   -- Do_setup()
   local mode
   if arg.range == 0 then
